@@ -12,7 +12,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
 # environment variables
 .env
 .env.production
@@ -20,5 +19,10 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# IDE設定
+.vscode/
 .idea/
+
+# 画像・動画のオリジナル（圧縮前）
+public/images/original/
+public/videos/original/
