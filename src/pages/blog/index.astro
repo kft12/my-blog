@@ -1,5 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import generalImage from '../../assets/葱茶.jpg';
+
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -7,13 +9,21 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection('blog'))
+	.sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	)
+	.map(
+		post => {
+			post.data.tags?.sort();
+			return post;
+		}
+	)
+;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
@@ -29,29 +39,23 @@ const posts = (await getCollection('blog')).sort(
 				padding: 0;
 			}
 			ul li {
-				width: calc(50% - 1rem);
+				width: 90%;
+				padding: .5rem;
+				background-color: rgb(232, 232, 232);
+				transition: var(--default-transition);
 			}
 			ul li * {
 				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
+				transition: var(--default-transition);
 			}
 			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
+				border-radius: 1px;
 			}
 			ul li a {
-				display: block;
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				position: relative;
 			}
 			.title {
 				margin: 0;
@@ -61,28 +65,27 @@ const posts = (await getCollection('blog')).sort(
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
+				font-size: var(--font-size-medium);
+			}
+			.tags {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+			}
+			.tags > span {
+				font-size: var(--font-size-small);
+				padding: 2px calc(var(--font-size-small) / 2);
+				margin: 0 3px;
+				color: rgb(var(--accent-dark))!important;
+				border: 1px solid var(--accent-dark);
+				border-radius: var(--font-size-small);
 			}
 			ul li a:hover h4,
 			ul li a:hover .date {
 				color: rgb(var(--accent));
 			}
-			ul a:hover img {
+			ul li:has(a:hover) {
 				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
 			}
 		</style>
 	</head>
@@ -95,13 +98,23 @@ const posts = (await getCollection('blog')).sort(
 						posts.map((post) => (
 							<li>
 								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
+									{
+										post.data.heroImage ?
+											<Image height={100} src={post.data.heroImage} alt="" />
+											:<Image height={100} src={generalImage} alt="" />
+									}
+									<div class="content">
+										<h4 class="title">{post.data.title}</h4>
+										<p class="date">
+											<FormattedDate date={post.data.pubDate} />
+										</p>
+										<div class="tags">
+											{post.data.tags && post.data.tags.map((tag) => (
+												<span>{tag}</span>
+												))
+											}
+										</div>
+									</div>
 								</a>
 							</li>
 						))

@@ -6,14 +6,33 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+interface Props {
+	title: string;
+	pubDate: Date;
+	hasToc?: boolean;
+	body: string;
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, pubDate, hasToc, body } = Astro.props;
+
+// 目次生成用
+const allArray = body.split('\n');
+const headerArray = [];
+for (const row of allArray ? allArray : []) {
+	if (row.startsWith('#')) {
+		const rank = row.indexOf(' ');
+		if (rank > 3) {continue;}
+
+		headerArray.push({
+			rank : rank
+			,text : row.slice(rank + 1)
+		});
+	}
+}
 ---
-
-<html lang="en">
+<html lang="ja">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -52,6 +71,21 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.last-updated-on {
 				font-style: italic;
 			}
+			.table-of-contents {
+
+			}
+			.table-of-contents a {
+				display: block;
+				margin-top: 5px;
+				border-bottom: 1px solid rgb(var(--gray));
+				font-size: var(--font-size-medium);
+			}
+			.h-2 {
+				padding-left: 1rem;
+			}
+			.h-3 {
+				padding-left: 2rem;
+			}
 		</style>
 	</head>
 
@@ -59,24 +93,25 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
 				<div class="prose">
 					<div class="title">
 						<div class="date">
 							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
 						</div>
 						<h1>{title}</h1>
 						<hr />
 					</div>
+
+					<div class="table-of-contents">
+						{
+							hasToc ?
+								headerArray.map(header =>(
+									<a class={'h-' + header.rank}>{header.text}</a>
+								))
+								: ''
+						}
+					</div>
+				
 					<slot />
 				</div>
 			</article>
