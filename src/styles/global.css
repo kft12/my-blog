@@ -6,7 +6,7 @@
 
 :root {
 	/* カラーリング */
-	--accent: #9bd3e4;
+	--accent: #4a70eb;
 	--accent-dark: #111987;
 	--black: 15, 18, 25;
 	--gray: 96, 115, 159;
@@ -23,6 +23,10 @@
 	--font-size-medium: 1.2rem;
 	--font-size-small: 1rem;
 	--font-size-x-small: 0.8rem;
+
+	/* サイズ */
+	--main-width: 950px; /* 変更時はSidebarのcssも修正する */
+	--main-max-width: calc(100% - 3em);
 
 	/* その他 */
 	--default-transition: all 0.4s ease;
@@ -55,8 +59,8 @@ body {
 	line-height: 1.7;
 }
 main {
-	width: 720px;
-	max-width: calc(100% - 2em);
+	width: var(--main-width);
+	max-width: var(--main-max-width);
 	margin: auto;
 	padding: 3em 1em;
 }
