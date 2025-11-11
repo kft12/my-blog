@@ -10,10 +10,14 @@ interface Props {
 	title: string;
 	pubDate: Date;
 	hasToc?: boolean;
+	heroImage?: object;
 	body: string;
 };
 
-const { title, pubDate, hasToc, body } = Astro.props;
+const { title, pubDate, hasToc, heroImage, body } = Astro.props;
+console.log(heroImage);
+
+let heroImageUrl = heroImage ? heroImage : 'src/assets/葱茶.jpg';
 
 // 目次生成用
 const allArray = body.split('\n');
@@ -30,23 +34,23 @@ for (const row of allArray ? allArray : []) {
 	}
 }
 ---
-<html lang="ja">
+<html lang="ja" style={`--hero-image: url(${heroImage ? heroImage.src : '/src/assets/葱茶.jpg'});`}>
 	<head>
 		<BaseHead title={title} />
 		<style>
+			main::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background: var(--hero-image) center/contain no-repeat;
+				opacity: 0.05;
+				pointer-events: none;
+				z-index: -1;
+			}
 			main {
 				width: calc(100% - 2em);
 				max-width: 100%;
 				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
 			}
 			.prose {
 				width: 720px;
@@ -67,9 +71,6 @@ for (const row of allArray ? allArray : []) {
 			.date {
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
 			}
 			.table-of-contents {
 
