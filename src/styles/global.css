@@ -61,6 +61,7 @@ body {
 main {
 	width: var(--main-max-width); /* これで合ってる */
 	max-width: 100%;
+	min-height: 620px;
 	margin: 0;
 }
 .container {
