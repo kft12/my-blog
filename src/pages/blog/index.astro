@@ -83,35 +83,38 @@ const posts = formatPosts(await getCollection('blog'));
 		<Header />
 		<main>
 			<Sidebar />
-			<section class="container">
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{
-										post.data.heroImage ?
-											<Image height={100} src={post.data.heroImage} alt="" />
-											:<Image height={100} src={generalImage} alt="" />
-									}
-									<div class="content">
-										<h4 class="title">{post.data.title}</h4>
-										<p class="date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-										<div class="tags">
-											{post.data.tags && post.data.tags.map((tag) => (
-												<span>{tag}</span>
-												))
-											}
+			<article>
+
+				<section class="container">
+					<ul>
+						{
+							posts.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										{
+											post.data.heroImage ?
+												<Image height={100} src={post.data.heroImage} alt="" />
+												:<Image height={100} src={generalImage} alt="" />
+										}
+										<div class="content">
+											<h4 class="title">{post.data.title}</h4>
+											<p class="date">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+											<div class="tags">
+												{post.data.tags && post.data.tags.map((tag) => (
+													<span>{tag}</span>
+													))
+												}
+											</div>
 										</div>
-									</div>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</section>
+			</article>
 		</main>
 		<Footer />
 	</body>

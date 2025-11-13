@@ -74,6 +74,10 @@ main {
 		padding-left: 3em;
 		padding-right: 0;
 	}
+
+	.tags {
+		display: none;
+	}
 }
 h1,
 h2,
