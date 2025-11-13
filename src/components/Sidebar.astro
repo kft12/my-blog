@@ -1,5 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
+
+import { ymStrToYm } from '../scripts/utils';
+
 const posts = (await getCollection('blog'))
     .sort(
 		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -39,7 +42,7 @@ for (const post of posts) {
             <h3>過去の記事</h3>
             {
                 Array.from(ymMap).map(([key, value]) => (
-                    <a>{key}（{value}）</a>
+                    <a href={`/history/${ymStrToYm(key)}/`}>{key}（{value}）</a>
                 ))
             }
         </section>
