@@ -59,10 +59,21 @@ body {
 	line-height: 1.7;
 }
 main {
+	width: var(--main-max-width); /* これで合ってる */
+	max-width: 100%;
+	margin: 0;
+}
+.container {
 	width: var(--main-width);
 	max-width: var(--main-max-width);
 	margin: auto;
-	padding: 3em 1em;
+	padding: 1em;
+}
+@media (width <= 1700px) {
+	.container {
+		padding-left: 3em;
+		padding-right: 0;
+	}
 }
 h1,
 h2,

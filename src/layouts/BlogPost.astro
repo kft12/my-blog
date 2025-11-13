@@ -56,16 +56,7 @@ for (const row of allArray ? allArray : []) {
 				pointer-events: none;
 				z-index: -1;
 			}
-			main {
-				width: var(--main-max-width); /* これで合ってる */
-				max-width: 100%;
-				margin: 0;
-			}
-			.prose {
-				width: var(--main-width);
-				max-width: var(--main-max-width);
-				margin: auto;
-				padding: 1em;
+			.container {
 				color: rgb(var(--gray-dark));
 			}
 			.title {
@@ -118,7 +109,7 @@ for (const row of allArray ? allArray : []) {
 		<main>
 			<Sidebar />
 			<article>
-				<div class="prose">
+				<div class="container">
 					<div class="title">
 						<div class="date">
 							<FormattedDate date={pubDate} />
