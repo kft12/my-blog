@@ -51,7 +51,7 @@ for (const post of posts) {
             <h3>タグ</h3>
             {
                 Array.from(tagMap).map(([key, value]) => (
-                    <a>{key}（{value}）</a>
+                    <a href={`/tag/${key}/`}>{key}（{value}）</a>
                 ))
             }
         </section>
