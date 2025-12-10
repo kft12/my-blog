@@ -1,0 +1,147 @@
+---
+import { getCollection } from 'astro:content';
+
+import { ymStrToYm } from '../scripts/utils';
+
+const posts = (await getCollection('blog'))
+    .sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	)
+;
+
+const ymMap = new Map();
+const tagMap = new Map();
+
+for (const post of posts) {
+
+    // 年月ごとのグループ分け
+    const ym = `${post.data.pubDate.getFullYear()}年${post.data.pubDate.getMonth()+1}月`
+    if (ymMap.has(ym)) {
+        ymMap.set(ym, ymMap.get(ym) + 1);
+    } else {
+        ymMap.set(ym, 1);
+    }
+
+    // タグごとのグループ分け
+    if (post.data.tags) {
+        for (const tag of post.data.tags) {
+            if (tagMap.has(tag)) {
+                tagMap.set(tag, tagMap.get(tag) + 1);
+            } else {
+                tagMap.set(tag, 1);
+            }
+        }
+    }
+}
+
+---
+<div id="sidebar">
+    <button id="openBtn" onclick="openSidebar()">☰</button>
+    <article>
+        <section>
+            <h3>過去の記事</h3>
+            {
+                Array.from(ymMap).map(([key, value]) => (
+                    <a href={`/history/${ymStrToYm(key)}/`}>{key}（{value}）</a>
+                ))
+            }
+        </section>
+
+        <section>
+            <h3>タグ</h3>
+            {
+                Array.from(tagMap).map(([key, value]) => (
+                    <a href={`/tag/${key}/`}>{key}（{value}）</a>
+                ))
+            }
+        </section>
+    </article>
+    <button id="closeBtn" onclick="closeSidebar()">＜</button>
+</div>
+
+
+<style>
+    button {
+        display: none;
+        position: fixed;
+        height: calc(100vh + 6px);
+        width: 2rem;
+        max-width: 5vw;
+    }
+
+    article {
+        height: 80%;
+        max-height: 550px;
+        overflow-y: auto;
+        position: fixed;
+        width: 16rem;
+        padding: 2.5rem 1rem;
+
+        h3 {
+            padding: 1px 6px;
+            font-size: var(--font-size-medium);
+            color: rgb(var(--gray-light));
+            background-color: var(--accent-dark);
+            line-height: normal;
+        }
+
+        a {
+            display: block;
+            font-size: var(--font-size-medium);
+            text-decoration: none;
+        }
+    }
+    section {
+        margin-bottom: 1.5rem;
+    }
+
+    @media (width <= 1700px) {
+
+        #openBtn {
+            left: -1px;
+            top: -2px;
+            display: block;
+        }
+        #closeBtn {
+            display: block;
+            top: 0;
+            left: 0;
+            transition: all 0.3s ease;
+            transform: translateX(-100%);
+            z-index: 999;
+        }
+        article {
+            height: 100vh;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            background-color: white;
+            transition: transform 0.3s ease;
+            transform: translateX(-100%);
+            z-index: 1000;
+        }
+        .open {
+            article {
+                transform: translateX(0);
+            }
+
+            #openBtn {
+                display: none;
+            }
+            #closeBtn {
+                left: calc(16rem + min(2rem, 5vw) - 1px);
+                top: -2px;
+                transform: translateX(0);
+            }
+        }
+    }
+</style>
+
+<script is:client>
+    function openSidebar() {
+        document.querySelector('#sidebar').classList.add('open');
+    }
+    function closeSidebar() {
+        document.querySelector('#sidebar').classList.remove('open');
+    }
+</script>

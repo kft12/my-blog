@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import generalImage from '../../assets/heroImage/葱茶.jpg';
+
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+import { formatPosts, getPostYm } from '../../scripts/utils';
+
+export async function getStaticPaths() {
+	// 年月を抽出する
+	const posts = await getCollection('blog');
+	const ymSet = new Set();
+	for (const post of posts) {
+		ymSet.add(getPostYm(post));
+	}
+
+	return Array.from(ymSet).map(ym => ({
+		params: { yearMonth: ym }
+	}));
+}
+
+const { yearMonth } = Astro.params;
+const posts = formatPosts(await getCollection('blog'))
+	.filter((post) => getPostYm(post) === yearMonth)
+;
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 2rem;
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			ul li {
+				width: 90%;
+				padding: .5rem;
+				background-color: rgb(232, 232, 232);
+				transition: var(--default-transition);
+			}
+			ul li * {
+				text-decoration: none;
+				transition: var(--default-transition);
+			}
+			ul li img {
+				border-radius: 1px;
+			}
+			ul li a {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				position: relative;
+			}
+			.title {
+				margin: 0;
+				color: rgb(var(--black));
+				line-height: 1;
+			}
+			.date {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: var(--font-size-medium);
+			}
+			.tags {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+			}
+			.tags > span {
+				font-size: var(--font-size-small);
+				padding: 2px calc(var(--font-size-small) / 2);
+				margin: 0 3px;
+				color: rgb(var(--accent-dark))!important;
+				border: 1px solid var(--accent-dark);
+				border-radius: var(--font-size-small);
+			}
+			ul li a:hover h4,
+			ul li a:hover .date {
+				color: rgb(var(--accent));
+			}
+			ul li:has(a:hover) {
+				box-shadow: var(--box-shadow);
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<Sidebar />
+			<article>
+				<section class="container">
+					<ul>
+						{
+							posts.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										{
+											post.data.heroImage ?
+												<Image height={100} src={post.data.heroImage} alt="" />
+												:<Image height={100} src={generalImage} alt="" />
+										}
+										<div class="content">
+											<h4 class="title">{post.data.title}</h4>
+											<p class="date">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+											<div class="tags">
+												{post.data.tags && post.data.tags.map((tag) => (
+													<span>{tag}</span>
+													))
+												}
+											</div>
+										</div>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</section>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>

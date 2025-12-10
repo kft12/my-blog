@@ -1,0 +1,28 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# IDE設定
+.vscode/
+.idea/
+
+# 画像・動画のオリジナル（圧縮前）
+public/images/original/
+public/videos/original/

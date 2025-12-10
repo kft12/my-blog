@@ -1,0 +1,144 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+interface Props {
+	title: string;
+	pubDate: Date;
+	hasToc?: boolean;
+	heroImage?: object;
+	body: string;
+};
+
+const { title, pubDate, hasToc, heroImage, body } = Astro.props;
+
+// 目次生成用
+const allArray = body.split('\n');
+const headerArray = [];
+const headerNo = new Map();
+for (const row of allArray ? allArray : []) {
+	if (row.startsWith('#')) {
+		const rank = row.indexOf(' ');
+		const text = row.slice(rank + 1);
+		const id = text.toLowerCase().replaceAll(' ', '-');
+
+		// 同じ内容だった場合、番号が割り当てられる
+		if (headerNo.has(id)) {
+			headerNo.set(id, headerNo.get(id) + 1);
+		} else {
+			headerNo.set(id, 0); // 0は番号なしを意味する
+		}
+
+		// 目次に登録するのは、h1、h2、h3のみ対象とする
+		if (rank > 3) {continue;}
+
+		headerArray.push({
+			rank : rank
+			,text : text
+			,id : headerNo.get(id) > 0 ? `${id}-${headerNo.get(id)}` : id
+		});
+	}
+}
+---
+<html lang="ja" style={`--hero-image: url(${heroImage ? heroImage.src : '/src/assets/heroImage/葱茶.jpg'});`}>
+	<head>
+		<BaseHead title={title} />
+		<style>
+			main::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background: var(--hero-image) center/contain no-repeat;
+				opacity: 0.05;
+				pointer-events: none;
+				z-index: -1;
+			}
+			.container {
+				color: rgb(var(--gray-dark));
+			}
+			.title {
+				margin-bottom: 1em;
+				padding: 1em 0;
+				text-align: center;
+				line-height: 1;
+			}
+			.title h1 {
+				margin: 0 0 0.5em 0;
+			}
+			.date {
+				margin-bottom: 0.5em;
+				color: rgb(var(--gray));
+			}
+			details {
+				margin-bottom: 3rem;
+				background-color: rgb(var(--gray-light));
+				border-radius: 3px;
+			}
+			summary {
+				padding: 0.5rem 1rem;
+				cursor: pointer;
+			}
+			.table-of-contents {
+				padding: 0.5rem 1rem 1rem 1rem;
+			}
+			.table-of-contents a {
+				display: block;
+				margin-top: 5px;
+				border-bottom: 1px solid rgb(var(--gray));
+				font-size: var(--font-size-medium);
+				color: var(--accent-dark);
+				cursor: pointer;
+				text-decoration: none;
+			}
+			a:hover {
+				box-shadow: var(--box-shadow);
+			}
+			.h-1 {
+				padding-left: 1rem;
+			}
+			.h-2 {
+				padding-left: 2rem;
+			}
+			.h-3 {
+				padding-left: 3rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<Sidebar />
+			<article>
+				<div class="container">
+					<div class="title">
+						<div class="date">
+							<FormattedDate date={pubDate} />
+						</div>
+						<h1>{title}</h1>
+						<hr />
+					</div>
+
+						{
+							hasToc && (
+								<details>
+									<summary>目次</summary>
+									<div class="table-of-contents">
+										{headerArray.map(header =>(
+											<a class={'h-' + header.rank} href={'#' + header.id}>{header.text}</a>
+										))}
+									</div>
+								</details>
+							)
+						}
+
+					<slot />
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
