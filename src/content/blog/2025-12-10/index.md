@@ -101,12 +101,12 @@ UIの移動スピードがアップすることで、よりゲーム体験を良
 めちゃくちゃ**体感が良くなる**ので、とてもおすすめ！
 
 通常時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/UISpeedPatch/original.mp4" type="video/mp4" />
 </video>
 
 Mod導入時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/UISpeedPatch/patched.mp4" type="video/mp4" />
 </video>
 
@@ -121,12 +121,12 @@ Mod導入時
 - フリーカメラ機能を実装（俯瞰カメラと置き換え）
 
 通常時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/CameraMod/original.mp4" type="video/mp4" />
 </video>
 
 Mod導入時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/CameraMod/patched.mp4" type="video/mp4" />
 </video>
 
@@ -156,7 +156,7 @@ Mod導入時
 「機能しないよ！アップデートしてくれ！」みたいなコメントもあったから、ちょっと気をつけてね。
 
 Mod導入時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/FasterGameStartup/patched.mp4" type="video/mp4" />
 </video>
 
@@ -175,7 +175,7 @@ Mod導入時
 利用は自己責任でね！
 
 Mod導入時
-<video controls width="1000">
+<video controls>
   <source src="/videos/2025-12-10/FasterMatchStartup/patched.mp4" type="video/mp4" />
 </video>
 
